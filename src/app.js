@@ -13,9 +13,9 @@ const corsOptions ={
     allowedHeaders: 'Content-Type,Authorization',
     exposedHeaders: 'Content-Range,X-Content- Range'
 }
-App.use(cors({corsOptions}));
-App.use(bodyParser.json());
-App.use(bodyParser.urlencoded({extended: true}));
+App.use(cors(corsOptions));
+App.use(express.json({ limit: '50mb' }));
+App.use(express.urlencoded({ limit: '50mb', extended: true }));
 App.use(express.static(__dirname + '/public'));
 
 App.use('/api', Api);
