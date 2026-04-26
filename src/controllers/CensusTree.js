@@ -19,10 +19,12 @@ module.exports = {
     const data = {
       properties: {
         tree: req.body.tree,
+        commonName: req.body.commonName,
         address: req.body.address,
         neightboardhood: req.body.neightboardhood,
         leafImg: req.files.leafImg ? req.files.leafImg[0].filename : "", // Cambiado
         profileImg: req.files.profileImg? req.files.profileImg[0].filename: "", // Cambiado
+        createdBy: req.body.createdBy,
         // damagedTrunk: req.body.damagedTrunk,
         // fallingDanger: req.body.fallingDanger,
         // inclination: req.body.inclination,

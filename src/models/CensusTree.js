@@ -16,6 +16,9 @@ const CensusTreeSchema = new mongoose.mongoose.Schema(
         type: String,
         required: true,
       },
+      commonName: { 
+        type: String 
+      },
       address: {
         type: String,
         required: true,
@@ -32,6 +35,10 @@ const CensusTreeSchema = new mongoose.mongoose.Schema(
         type: String,
         required: true,
       },
+      createdBy: { 
+      type: String, 
+      default: "Usuario Anónimo" 
+    },
     //   // tronco dañado
     //   damagedTrunk: {
     //     type: Boolean,
