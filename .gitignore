@@ -9,7 +9,7 @@
 .env
 
 package-lock.json
-
+usuarios.txt
 # testing
 /coverage
 
