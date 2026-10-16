@@ -1,11 +1,8 @@
 # Etapa 1: Build de la app
-FROM node:20-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-# Actualizamos npm para evitar el bug edgesOut
-RUN npm install -g npm@latest
-# Instalamos omitiendo conflictos estrictos de dependencias
-RUN npm install --legacy-peer-deps
+RUN npm install
 COPY . .
 RUN npm run build
 
