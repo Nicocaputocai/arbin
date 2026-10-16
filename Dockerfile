@@ -2,7 +2,10 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+# Actualizamos npm para evitar el bug edgesOut
+RUN npm install -g npm@latest
+# Instalamos omitiendo conflictos estrictos de dependencias
+RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm run build
 
