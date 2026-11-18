@@ -5,23 +5,25 @@ const fs = require('fs');
 // Configuración de almacenamiento
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const treeFolder = req.body.tree; // Nombre de la carpeta basado en `req.body.tree`
-    
-    if (!treeFolder) {
-      return cb(new Error('El campo "tree" es obligatorio en el cuerpo de la solicitud.'));
-    }
+    // Fallback por si el archivo llega en el FormData antes que req.body.tree
+    const rawFolder = req.body.tree || 'general';
+    // Sanitizamos el nombre para evitar caracteres inválidos en rutas (ej. / \ : * ? " < > |)
+    const safeFolder = rawFolder
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9áéíóúñ_-]/gi, '_');
 
-    const folderPath = path.join(__dirname, '../public/img', treeFolder);
+    const folderPath = path.join(__dirname, '../public/img', safeFolder);
 
-    // Verifica si la carpeta existe, si no, la crea
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath, { recursive: true });
     }
 
-    cb(null, folderPath); // Carpeta de destino
+    cb(null, folderPath);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now();
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e4)}`;
     cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
   },
 });
@@ -31,20 +33,18 @@ const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Solo se permiten archivos de imagen.'));
+    cb(new Error('Solo se permiten archivos de imagen.'), false);
   }
 };
 
-// Middleware de Multer
+// Middleware de Multer sin bloqueo por fotos pesadas
 const uploadImg = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { 
-    fileSize: 20 * 1024 * 1024, // Aumentado a 20MB por foto
-    fieldSize: 10 * 1024 * 1024 // Aumentado a 10MB para campos de texto/datos
-  }, 
+  limits: {
+    fileSize: 100 * 1024 * 1024, // 100MB por archivo (evita bloqueos con cámaras de alta resolución)
+    fieldSize: 25 * 1024 * 1024, // 25MB para campos de texto
+  },
 });
-
-module.exports = uploadImg;
 
 module.exports = uploadImg;

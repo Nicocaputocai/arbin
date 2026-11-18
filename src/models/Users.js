@@ -1,28 +1,34 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    user: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ['user', 'supervisor', 'admin'],
+      required: true,
+      default: 'user',
+    },
   },
-  user: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role:{
-    type: String,
-    required: false,
-    default: 'user',
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // Middleware para cifrar la contraseña antes de guardar
 UserSchema.pre('save', async function (next) {

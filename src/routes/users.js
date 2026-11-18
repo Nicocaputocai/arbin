@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const UserController = require('../controllers/UsersController.js');
+const UsersController = require('../controllers/UsersController');
+const { verifyToken, checkRole } = require('../middlewares/auth');
 
-// Rutas para usuarios
-router.post('/register', UserController.register);
-router.post('/login', UserController.login);
-router.get('/test', UserController.test);
+// Ruta de prueba y autenticación pública
+router.get('/test', UsersController.test);
+router.post('/login', UsersController.login);
+
+// Gestión de usuarios (protegida por rol)
+router.post('/register', verifyToken, checkRole('admin'), UsersController.register);
+router.get('/', verifyToken, checkRole('admin', 'supervisor'), UsersController.getAllUsers);
 
 module.exports = router;
